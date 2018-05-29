@@ -1,0 +1,1394 @@
+\documentclass[dvipdfmx, uplatex]{jsreport}
+
+\usepackage{mymath}
+
+\begin{document}
+
+\title{河東先生「Lebesgue 積分講義」輪読ノート}
+\author{松下 祐介}
+\date{}
+\maketitle
+
+\chapter*{はじめに}
+
+この輪読ノートは、河東泰之先生の 2016 年度 Lebesgue 積分講義の講義ノート \url{http://www.ms.u-tokyo.ac.jp/~yasuyuki/lebesgue2016.pdf} の輪読会の内容をまとめ直したものです。
+
+ほとんどの部分において、元の講義ノートと同じ構成を取っています。
+
+素晴らしい講義ノートを公開してくださった河東先生にこの場を借りて感謝の意を申し上げます。
+
+\tableofcontents
+
+\chapter{準備}
+
+\section{記号法と語法}
+
+合併 \(A \sor B,\ \Sor_\lmd A_\lmd\) は、
+合併する集合どうしが互いに交わらないとき（\m{非交和} (disjoint union) であるとき）、
+\(A + B,\ \sum_\lmd A_\lmd\) と書く。
+
+\m{差集合} (set difference) \(A \diff B\)
+（\(A\) に対する \(B\) の\m{相対的補集合} (relative complement)）は、
+特に \(A \spr B\) のとき \(A - B\) と書く。
+全体集合 \(U\) が明らかである場合、
+\(U - A\) のことを集合 \(A\) の\m{補集合} (complement) といい、
+\(A\co\) と書く。
+また、\(A \sdiff B\) で\m{対称差} (symmetric difference) \(\p{A \diff B} + \p{B \diff A}\) を表す。
+
+\(\chi_A\) で集合 \(A\) の \m{指示関数} (indicator function)（\m{特性関数} (characteristic function) ともいう）を表すこととする。
+
+\(X \dfd,\ X \undfd\) はそれぞれ \(X\) が定義されている（存在する）、定義されていないという意味である。
+例えば \(\lim_{k \to \ify} a_k \dfd\) などと書く。
+\(X \ex{=} Y\) と書いたら \(X \dfd\) ならば \(Y \dfd\) かつ \(X = Y\) であるという意味である。
+\(X \xx{=} Y\) は \(X \ex{=} Y\) かつ \(X \xe{=} Y\) という意味である。
+
+集合は各元の重複度が \(1\) の多重集合であると考える。
+\(\cc{\dots},\ \ss{\dots}{\dots}\) と書いた場合は、
+多重集合としての内包表記、外延表記のことである。
+多重集合 \(A\) について \(f \bb{A},\ f\inv \bb{A}\) と書いた場合は、
+重複度を込めた、多重集合としての順像、逆像のことである。
+
+\m{可算} (countable) と書いた場合は
+\m{可算無限} (countably infinite) と\m{有限} (finite) の
+両方の場合を含むとする。
+
+\(\RRc \defeq \RR \sor \c{\pm \ify}\) とする。
+また、一般に \(A\gez \defeq \s{a \in A}{a \ge 0}\) というような記号法を取る。
+特に、\(\RRc\gez = \RR\gez \sor \c{\ify}\) に注意。
+
+半順序集合 \(P\) の元 \(a \in P\) と部分集合 \(X \sub P\)について、
+\(\lwr_X a \defeq \s{x \in X}{x \le a},\
+\upr_X a \defeq \s{x \in X}{x \ge a},\
+\lwrx_X a \defeq \s{x \in X}{x < a},\
+\uprx_X a \defeq \s{x \in X}{x > a}\) とする。
+
+関数列 \(f_1, f_2, f_3, \dots\) について、
+単に \(\lim_{k \to \ify} f_k\) や \(f_k \to f\) と書いた場合は
+\m{各点収束} (pointwise convergence) の話であり、
+\m{一様収束} (uniform convergence) に関しては \(\uniflim_{k \to \ify} f_k\) や \(f_k \unifto f\) と書くことにする。
+
+\section{実数の基本性質}
+
+\begin{fact}
+\(\RRc\) は通常の順序について完備束をなす。
+\end{fact}
+
+\begin{defi}
+整列集合 \(X\) について、
+\(\ify\) を \(X\) のどの元よりも大きい元とみなし、
+新たな整列集合 \(X + \c{\ify}\) を作ることを考える。
+
+\(X\) で添字付けられた実数の組 \(\p{a_x}_{x \in X}\) が与えられたとき、
+任意の \(p \in X + \c{\ify}\) について \(\sum_{x \in \lwrx_X p} a_x \p{\in \RRc}\) を以下のようにして帰納的に定義し、
+\(\sum_{x \in X} a_x = \sum_{x \in \lwrx_X \ify} a_x\ \p{\in \RRc}\) を定義する。
+\begin{itemize}
+	\item
+	\(p\) が最小元のとき、
+	\(\sum_{x \in \lwrx_X p} a_x \defeq 0\) とする。
+	\item
+	\(p\) が \(p'\) の後続元のとき、
+	\(\sum_{x \in \lwrx_X p} a_x \defeq \sum_{x \in \lwrx_X p'} a_x + a_{p'}\) とする。
+	\item
+	\(p\) が極限のとき、
+	\(\sum_{x \in \lwrx_X p} a_x \defeq \lim_{q \uto p} \sum_{x \in \lwrx_X q} a_x\) とする。
+	（なお、\(\lim_{q \uto p} \sum_{x \in \lwrx_X q} a_x\) が振動する場合は、
+	それ以降、\(r \ge p\) において \(\sum_{x \in \lwrx_X r} a_x \undfd\) とし、
+	\(\sum_{x \in X} a_x \undfd\) とする。）
+\end{itemize}
+すべての \(a_x\) が非負/非正実数の場合は、
+\(s_p\) が \(p\) について広義単調増加/減少になり、
+必ず \(\sum_{x \in X} a_x \dfd\) となる。
+
+多重集合 \(S\) について、
+整列集合で添字付けられた組 \(\mb a = \p{a_x}_{x \in X}\) で
+\(\mb a \bb{X} = S\) を満たすものを、
+\(S\) の\m{整列} (well-order) と呼ぶことにする。
+\end{defi}
+
+\begin{thm}
+非負実数の（あるいは非正実数の）多重集合 \(S\) が与えられたとき、
+\(S\) の任意の整列 \(\mb a = \p{a_x}_{x \in X},\
+\mb b = \p{b_y}_{y \in Y}\) について、
+\(\sum_{x \in X} a_x = \sum_{y \in Y} b_y\) である。
+すなわち、\(S\) の総和は整列の仕方によらない。
+ゆえにこれを \(\sum S\) と書くことにする。
+\end{thm}
+\begin{proof}
+非負実数の場合のみ考えればよい。
+
+\(0\) を全て取り除いても総和は変わらないので、
+\(S\) は \(0\) を含まないとしてよい。
+\(S\) がある正の値を無限個持っているとき、
+\(\sum_{x \in X} a_x = \sum_{y \in Y} b_y = \ify\) となる。
+ゆえに、\(S\) はどの正の値も有限個しか持たないとする。
+
+各 \(p \in X + \ify\) について、
+\(\mb a \bb{\lwrx p} = \mb b \bb{Y_p}\) を満たす
+\(Y_p \sub Y\) を、
+以下のようにして帰納的に構築する。
+\begin{itemize}
+	\item
+	\(p\) が最小元のとき、\(Y_p \defeq \emp\) とする。
+	\item
+	\(p\) が \(p'\) の後続元のとき、
+	\(y \in Y - Y_{p'}\) で \(b_y = a_{p'}\) を満たすものが必ず存在する。
+	そのような \(y\) のうち最小のものを \(y_{p'}\) とし、
+	\(Y_p \defeq Y_{p'} + \c{y_{p'}}\) とする。
+	\item
+	\(p\) が極限のとき、\(Y_p \defeq \Sor_{q < p} Y_q\) とする。
+\end{itemize}
+このとき、任意の \(p \in X + \ify\) について
+\(\sum_{x \in \lwrx p} a_x \le \sum_{y \in Y_p} b_y\) であることが
+以下のようにして \(p\) についての帰納法で示せる。
+\begin{itemize}
+	\item
+	\(p\) が最小元のとき、
+	\(\sum_{x \in \lwrx p} a_x = \sum_{y \in Y_p} b_y = 0\) である。
+	\item
+	\(p\) が \(p'\) の後続元であるとき、
+	任意の \(q \in \uprx_{Y_{p'} + \ify} y_{p'}\) について
+	\(\sum_{y \in \lwrx_{Y_p} q} b_y = \sum_{y \in \lwrx_{Y_{p'}} q} b_y + a_{p'}\) であることを、
+	\(q\) についての帰納法で示せる。
+	ゆえに \(\sum_{y \in Y_p} b_y
+	= \sum_{y \in \lwrx_{Y_p} \ify} b_y
+	= \sum_{y \in \lwrx_{Y_{p'}} \ify} b_y + a_{p'}
+	= \sum_{y \in Y_{p'}} b_y + a_{p'}\) であるので、
+	\(\sum_{x \in \lwrx p} a_x
+	= \sum_{x \in \lwrx {p'}} a_x + a_{p'}
+	\le \sum_{y \in Y_{p'}} b_y + a_{p'}
+	= \sum_{y \in Y_p} b_y\) が成立する。
+	\item
+	\(p\) が極限のとき、
+	任意の \(q < p\) について \(Y_q \sub Y_p\) より
+	\(\sum_{x \in \lwrx q} a_x \le \sum_{y \in Y_q} b_y \le \sum_{y \in Y_p} b_y\) なので、
+	\(q \to p\) の極限を取って \(\sum_{x \in \lwrx p} a_x \le \sum_{y \in Y_p} b_y\) である。
+\end{itemize}
+以上より、\(\sum_{x \in X} a_x
+= \sum_{x \in \lwrx \ify} a_x
+\le \sum_{y \in Y_\ify} b_y
+= \sum_{y \in Y} b_y\) が得られる。
+対称性より \(\sum_{x \in X} a_x \ge \sum_{y \in Y} b_y\) も成立するので、
+最終的に \(\sum_{x \in X} a_x = \sum_{y \in Y} b_y\) が得られる。
+\end{proof}
+
+\begin{prop}
+非負実数（あるいは非正実数）の多重集合 \(S\) があったとき、
+\(\sum S\) が有限値ならば
+\(S\) は正（あるいは負）の数を可算個しか持たない。
+\end{prop}
+\begin{proof}
+非負実数の場合のみ考えれば良い。
+
+\(S\) の整列 \(\p{a_x}_{x \in X}\) が与えられたとき、
+\(X_+ \defeq \s{x \in X}{a_x > 0}\) とし、
+各 \(p \in X_+\) について、\(p\) の後続元を \(q\) として、
+\(s_p \in \p{\sum_{x \in \lwrx_X p} a_x, \sum_{x \in \lwrx_X q} a_x}\) を満たす
+有理数 \(s_p \in \QQ\) を取れる。
+\(p \in X_*\) ごとに \(s_p\) は異なるが、
+有理数は可算無限個であるので、
+\(X_+\) は可算である。
+\end{proof}
+
+\begin{thm}
+実数の多重集合 \(S\) が与えられたとする。
+\(\t{S} = \ss{\t{s}}{s \in S}\) について、\(\sum \t{S} < \ify\) であるとき、
+\(S\) の総和は整列の仕方によらず常に定義され、かつ一定の有限値になる。
+ゆえにこれも \(\sum S\) と書くことにする。
+\end{thm}
+\begin{proof}
+\(S_+ \defeq \ss{s \in S}{s \ge 0},\
+S_- \defeq \ss{s \in S}{s < 0}\)
+とすると、
+\(\sum \t{S} = \sum \t{S_+} + \sum \t{S_-} = \sum S_+ - \sum S_-\) であるので、
+\(0 \le \sum S_+ < \ify\) かつ \(-\ify < \sum S_- \le 0\) が成立する。
+
+\(b_x \defeq \max \c{a_x, 0},\
+c_x \defeq \min \c{a_x, 0}\)
+とする。
+任意の \(x \in X\) について \(a_x = b_x + c_x\) であることから、
+任意の \(p \in X + \c{\ify}\) について
+\(\sum_{x \in \lwrx_X p} a_x \dfd\) であり、なおかつ
+\(\sum_{x \in \lwrx_X p} a_x
+= \sum_{x \in \lwrx_X p} b_x + \sum_{x \in \lwrx_X p} c_x\)
+であることが、帰納法によりわかる。
+ゆえに、\(\sum_{x \in X} a_x \dfd\) であり、
+\(\sum_{x \in X} a_x
+= \sum_{x \in \lwrx_X \ify} a_x
+= \sum_{x \in \lwrx_X \ify} b_x + \sum_{x \in \lwrx_X \ify} c_x
+= \sum_{x \in X} b_x + \sum_{x \in X} c_x
+= \sum S_+ + \sum S_-\)
+が得られ、
+\(\sum_{x \in X} a_x\) が
+\(S\) の整列の仕方によらない一定の有限値 \(\sum S_+ + \sum S_-\) になることが示された。
+\end{proof}
+
+\chapter{測度}
+
+2次元ユークリッド平面や3次元ユークリッド空間において、
+長方形や直方体といった特定の種類の点の集まりに対しては面積や体積といった「大きさ」が考えられる。
+集合論の世界が開かれた結果、点の集まりにもいろいろあることがわかった。
+それらすべてに自然な「大きさ」を与えることはできるだろうか？
+より一般に、なんらかの空間（あるいは集合）におけるさまざまな点の集まりに対して、
+自然な「大きさ」を考えることはできるだろうか？
+
+自然な「大きさ」には、
+2つの交わらない集合をくっつけると、
+「大きさ」が足し算になる、というような性質が求められるだろう。
+また、集合がある大きい集合に向かってだんだん元が増えていくときに、
+「大きさ」もその大きい集合の「大きさ」にどんどん近づいていく、
+というような「大きさ」の「なめらかさ」も要請されるだろう。
+
+こうして「大きさ」にいろいろなことを要請すると、
+残念ながら、2次元ユークリッド平面や3次元ユークリッド空間では、
+面積や体積を拡張するような「大きさ」をすべての点集合に対して定義できないことがわかる。
+一部の性質の良い集合にしか「大きさ」は定義できないのである。
+しかし、「大きさ」の定義される集合はなるべく多くしたい。
+
+どのようにすれば「大きさ」を構成できるのか？
+どのようにすれば「大きさ」の定義された集合がたくさん得られるのか？
+どのような性質を「大きさ」は最終的にもつことになるのか？
+測度論はこうした問いに答える学問である。
+
+\section{有限加法族}
+
+\begin{defi}
+集合 \(X\) の部分集合族のうち以下の性質を満たす \(\mcl F\) を\m{有限加法族} (finitely additive class) あるいは\m{代数} (algebra) あるいは\m{集合体} (field of sets) という。
+\begin{itemize}
+	\item 補集合について閉じている。
+	\item 空でなく / \(\emp\)を持ち / \(X\)を持ち、
+	かつ 二項合併 / 二項交叉 / 差集合 について閉じている。\\
+	言い換えると、有限合併 / 有限交叉 について閉じている。
+\end{itemize}
+\end{defi}
+
+\begin{prop}
+集合族 \(\p{X_\lmd}_\lmd\) の各 \(X_\lmd\) に対し有限加法族 \({\mcl F}_\lmd\) が与えられているとき、
+\(\Sor_\lmd \prj_\lmd\inv \b{\b{{\mcl F}_\lmd}}\) を含むような \(\p{X_\lmd}_\lmd\) の有限加法族のうち最小のものは、
+\(\prod_\lmd E_\lmd\)
+（\(E_\lmd \in \mcl F_\lmd\)、ただし有限個の \(\lmd\) を除いて \(E_\lmd = X_\lmd\)）
+という形の集合
+（別の表現をすれば、
+\(\prj_{\lmd}\inv \b{E}\)（\(E \in \mcl F_\lmd\)）
+というような集合の有限交叉）
+の有限合併全体であり、
+これはこの形の集合の有限非交和全体とも一致する。
+\end{prop}
+\begin{proof}
+一般に \(A \sub X, B \sub Y\) のとき
+\(X \X Y - A \X B
+= A \X (Y - B) + (X - A) \X B + (X - A) \X (Y - B) \)
+であるということに注目すれば明らか。
+\end{proof}
+
+\begin{rem}
+一般に、直積と交叉は相性が良く、
+集合族 \(\p{X_\lmd}_\lmd\) の各 \(X_\lmd\) に対し
+その部分集合族 \(\p{A_{\lmd, \gm}}_{\gm \in \Gm}\) が与えられたとき（\(\Gm\) は \(\lmd\) によらない）、
+\(\prod_\lmd \Sand_\gm A_{\lmd, \gm} = \Sand_\gm \prod_\lmd A_{\lmd, \gm}\) が成立している。
+\end{rem}
+
+\section{有限加法測度と完全加法測度}
+
+\begin{defi}
+\(X\) の有限加法族 \(\mcl F\) から \(\RRc\gez\) への関数「測度」 \(m\) のうち、以下の性質を満たすものを \m{有限加法測度} (finitely additive measure) という。
+\begin{itemize}
+	\item 空集合の「測度」が 0 であり、かつ、二項非交和の「測度」が「測度」の二項和である。\\
+	言い換えると、有限非交和の「測度」が「測度」の有限和である。
+\end{itemize}
+
+部分集合の「測度」がもとの集合の「測度」以下となることに注意（\(m\) の値域の非負性が効いてくる）。
+また、有限合併の「測度」は「測度」の有限和以下となる。
+
+さらに、可算非交和の「測度」が常に「測度」の可算和である
+（\m{\(\sgm\)-加法性} (\(\sgm\)-additivity) ともいう）とき
+（ただし可算非交和自体が \(\mcl F\) に属している場合に限る）、
+\(m\) は\m{完全加法測度} (completely additive measure) であるという。
+\end{defi}
+
+\begin{rem}
+左開右閉区間を \(\pb{a, b}\) で表すような区間の書き方をするが、
+こうした区間は常に有限実数の範囲内で考えることに注意。
+例えば、一般に \(\pb{a, \ify} = \p{a, \ify}\) となる。
+\end{rem}
+
+\begin{exm}[ユークリッド空間における関数族による有限加法測度]\label{eulcid-function-measure}
+\(n\)次元ユークリッド空間において、左開右閉区間の直積の形の集合を直方体と呼ぶことにする。
+実数上の定数関数でない広義単調増加関数 \(f_1, \dots, f_n\) が与えられたとき、
+直方体の有限非交和全体のなす有限加法族 \(\mcl F\) に対し、以下のようにして有限加法測度 \(m\) を定めることができる。
+\begin{quote}
+まず、有界な直方体 \(\prod_i \pb{a_i, b_i}\) に対しては
+「測度」を \(\prod_i \p[1]{f_i\p{b_i} - f_i\p{a_i}}\) とする。
+また、非有界な直方体 \(I\) についても「測度」を
+\(\sup\s{m\p{J}}{\tx{\(J\) は \(I\) に含まれる有界直方体}}\) とする。
+そして、直方体の有限非交和に対しては各直方体の「測度」の和によって「測度」を定める。
+\end{quote}
+この定義が矛盾しないことを確かめれば、\(m\) が有限加法測度であることは明らかである。
+それには有限非交和の処理が特に問題になるが、
+同じ集合について2つの形の非交和への分解が与えられたとき、
+どちらよりも細かい賽の目で区切るような非交和への分解を考えると、
+問題ないことがわかる。
+\end{exm}
+
+\begin{thm}
+先ほど定義された \(m\) が完全加法的であるための必要十分条件は、各 \(f_i\) がすべて右連続であることである。
+\end{thm}
+\begin{proof}
+まず必要性を示す。
+\(f_1\) の右連続性のみ示す（他の \(i\) についても同様である）。
+\(x_1 > x_2 > x_3 > \cdots, \lim_{k \to \ify} x_k = x\) であるとする。
+\(i = 2, \dots, n\) について、\(f_i \p{a_i} < f_i \p{b_i}\) となるように \(a_i, b_i\) を選ぶ。
+\(I_k \defeq \pb{a_{k+1}, a_k} \X \pb{a_2, b_2} \X \cdots \X \pb{a_n, b_n},\
+I \defeq \pb{a, a_1} \X \pb{a_2, b_2} \X \cdots \X \pb{a_n, b_n}\) とすると、
+\(I = \sum_{k = 1}^\ify I_k\) より
+\(m \p{I} = \sum_{k = 1}^\ify m \p{I_k}\) なので、
+両辺を \(\prod_{i=2}^n \p[1]{f_i \p{b_i} - f_i \p{a_i}}\) で割ると、
+\(f_1 \p{x_1 - x} = \lim_{k \to \ify} \p{f_1 \p{x_1} - f_1 \p{x_k}}\) を得る。
+ゆえに、\(\lim_{k \to \ify} f_1 \p{x_k} = F_1 \p{a}\) である。
+
+次に十分性を示す。
+\(E = \sum_{k = 1}^\ify E_k\)（\(E, E_k \in \mcl F\)）について考える。
+\begin{description}
+	\item[直方体のコンパクト化]
+	任意の有界でない直方体 \(I\) は「測度」を無限小 \(\eps_1\) 減らすだけで有界な直方体 \(I'\) にすることができる。
+	さらに、任意の有界な直方体 \(I'\) について、
+	各成分の左端を無限小 \(\dlt_i\) 右に動かした直方体 \(I''\) を作ると、
+	\(\clsr{I''}\) は \(I\) に含まれ、
+	\(m \p{I''} - m \p{I}\) は無限小 \(\eps_2\) 以下である。
+	以上より、任意の直方体 \(I\) が与えられたとき、
+	直方体 \(I''\) で、
+	\(\clsr{I''}\) が \(I\) に含まれるコンパクト集合であり、
+	\(m \p{I} - m \p{I''}\) が無限小 \(\eps_3 \defeq \eps_1 + \eps_2\) 以下であるものが取れる。
+
+	\item[直方体の有限非交和のコンパクト化]
+	\(E\) について考えると、
+	\(E\) は直方体の有限非交和 \(\sum_{j = 1}^L I_j\) として書ける。
+	各直方体 \(I_j\) について先ほどの「コンパクト化」を行い直方体 \(I''_j\) を作り、
+	\(E'' \defeq \sum_{j = 1}^L I''_j \in \mcl F\) とすると、
+	\(\clsr{E''}\) は \(E\) に含まれるコンパクト集合であり、
+	\(m \p{E} - m \p{E''}\) は無限小 \(\eps_4 \defeq L \eps_3\) 以下である。
+
+	\item[直方体の開集合化]
+	任意の直方体 \(J\) について、
+	各成分の右端を無限小 \(\dlt'_i\) 右に動かした直方体 \(J'\) を作ると、
+	\(\intr{J'}\) は \(J\) を含んでいて、
+	\(m \p{J'} - m \p{J}\) は無限小 \(\eps_5\) 以下である。
+
+	\item[コンパクト化と開集合化の合わせ技による有限打ち切り]
+	\(E = \sum_{i = 1}^\ify E_i\) について考えると、
+	各 \(E_k\) は直方体の有限和であるから、
+	\(E\) は直方体の可算和 \(\sum_{k = 1}^\ify J_k\) として書ける。
+	各 \(J_k\) に先ほどの「開集合化」を施し、
+	\(m \p{J'_k} - m \p{J_k} \le \eps_6 / 2^k\) となるように 直方体 \(J'_k\) を作る。
+	このとき、\(\clsr{E''} \sub E \sub \sum_{k = 1}^\ify \intr{J'_k}\) であるので、
+	\(\clsr{E''}\) のコンパクト性と \(\intr{J'_k}\) の開集合性より、
+	\(\clsr{E''} \sub \sum_{k = 1}^N \intr{J'_k}\) を満たす有限の \(N\) が存在する。
+
+	\item[有限性を利用した最後の仕上げ]
+	ゆえに、\(E'' \sub \sum_{k = 1}^N J'_k\) より
+	\(m \p{E''} \le m \p[1]{\sum_{k = 1}^N J'_k} = \sum_{k = 1}^N m \p{J'_k}\) なので、
+	これに \(m \p{E} - \eps_4 \le m \p{E''}\) と
+	\(\sum_{k = 1}^N m \p{J'_k} \le \sum_{k = 1}^N m \p{J_k} + \eps_6 \le \sum_{k = 1}^\ify m \p{J_k} + \eps
+	_6\) とを合わせて考えると、
+	\(m \p{E} - \eps_4 \le m \p[1]{\sum_{k = 1}^\ify J_k} + \eps_6\) である。
+	したがって、\(m \p{E} \le m \p[1]{\sum_{k = 1}^\ify J_k} = m \p[1]{\sum_{i = 1}^\ify E_i}\) である。
+
+	一方、任意の有限の \(M\) について \(\sum_{k = 1}^M m \p{E_k} = m \p[1]{\sum_{k = 1}^M E_k} \le m \p{E}\) であるので、極限を取ると \(m \p[1]{\sum_{i = 1}^\ify E_i} \le m \p{E}\) が得られる。
+
+	以上より、\(m \p{E} = m \p[1]{\sum_{i = 1}^\ify E_i}\) である。
+	（このように、等式を難しい不等式と簡単な不等式に分け、
+	難しい不等式を無限小量や全称量化などを介して証明する、というのは基本的な手法である。）
+\end{description}
+\end{proof}
+
+\section{外測度}
+
+\begin{defi}
+集合 \(X\) の冪集合から \(\RRc\gez\) への関数「測度」 \(\Gm\) は、
+以下の条件を満たすとき\m{外測度} (outer measure, exterior measure) であるという。
+\begin{itemize}
+	\item 空集合の測度が 0。
+	\item （\m{単調性} (monotonicity)）部分集合の測度はもとの集合の測度以下。
+	\item （\m{\(\sgm\)-劣加法性} (\(\sgm\)-subadditivity)）可算合併の測度は測度の可算和以下。
+\end{itemize}
+\end{defi}
+
+\begin{thm}[有限加法測度から外測度を作る]\label{finite-additive-outer-measure}
+1.
+\(X\) の有限加法族 \(\mcl F\) に対する有限加法測度 \(m\) が与えられたとき、
+\(\Gm \p{A} \defeq \inf \s[1]{\sum_{k = 1}^{\ify} m \p{E_k}}{E_k \in \mcl F, \Sor_{k = 1}^\ify E_k} \spr A\)
+は \(X\) 上の外測度である。
+
+2.
+さらに、\(m\) が完全加法的ならば、\(\Gm\) は \(\mcl F\) 上 \(m\) と一致する。
+\end{thm}
+\begin{proof}
+1.
+\(\Gm\) が外測度であることについては、可算合併の「測度」が「測度」の可算和以下であることだけが非自明である。
+\(X\) の部分集合 \(A_1, A_2, A_3, \dots\) が与えられているとする。
+このとき、任意の \(\eps > 0\) に対し、\(\Gm \p{A_k} + \eps / 2^k \ge \sum_{l = 1}^\ify m \p{E_{k, l}}\)
+かつ \(\Sor_{l = 1}^\ify E_{k, l} \spr A_k\) を満たす \(E_{k, l}\) を取れる。
+このとき、
+\(\Gm \p[1]{\Sor_{k = 1}^\ify A_k}
+\le \Gm \p[1]{\Sor_{k = 1,\ l = 1}^{\ify, \ify} E_{k, l}}
+\le \sum_{k = 1,\ l = 1}^{\ify, \ify} m \p{E_{k, l}}
+\le \sum_{k = 1}^\ify \Gm \p{A_k} + \eps\)
+である。ゆえに、
+\(\Gm \p[1]{\Sor_{k = 1}^\ify A_k} \le \sum_{k = 1}^\ify \Gm \p{A_k}\)
+が成立する。
+
+2.
+\(E \in \mcl F\) とする。
+\(\Gm \p{E} \le m \p{E}\) は定義より直ちに成立する。
+\(E \sub \Sor_{k = 1}^\ify E_k\)（\(E_k \in \mcl F\)）のとき、
+\(E'_k \defeq \p{E \sor E_k} \diff \Sor_{j = 1}^{k - 1} E_j\) とすると、
+\(m \p{E}
+= m \p[1]{\sum_{k = 1}^\ify E'_k}
+= \sum_{k = 1}^\ify m \p{E'_k}
+\le \sum_{k = 1}^\ify m \p{E_k} \) が成立する
+（ここで \(m\) の完全加法性を用いている）。
+ゆえに、右辺の下限を取ると、\(m \p{E} \le \Gm \p{E}\)。
+\end{proof}
+
+\begin{defi}
+「\nameref{eulcid-function-measure}」で各 \(f_i\) を恒等関数にすることで得られる完全加法測度に対して
+「\nameref{finite-additive-outer-measure}」の方法を適用して作った外測度を
+\m{ルベーグ外測度} (Lebesgue outer measure, Lebesgue exterior measure) といい、
+ここでは \(\mu^*_L\) と書く。
+\end{defi}
+
+\section{可測集合}
+
+\begin{defi}
+\(X\) 上の外測度 \(\Gm\) に対し、
+\(E \sub X\) が \m{\(\Gm\)-可測} (\(\Gm\)-measurable) であるとは、
+任意の \(A \sub X\) に対して \(\Gm \p{A} = \Gm \p{A \sand E} + \Gm \p{A \sand E\co}\) であることである。
+言い換えると、任意の \(A_1 \sub E,\ A_2 \sub E\co\) に対して \(\Gm \p{A_1 + A_2} = \Gm \p{A_1} + \Gm \p{A_2}\) が成立することである。
+（なお、それぞれの等式について、\(\le\) の側は自動的に成立しているので、\(\ge\) の側だけを考えればよい、ということに注意。）
+\end{defi}
+
+これは内測度と外測度の一致と同値であるか？
+
+\begin{prop}
+外測度 \(\Gm\) に関して、
+\(\Gm\)-可測な集合の補集合は \(\Gm\)-可測である。
+また、\(\Gm\) による外測度が 0 である集合も \(\Gm\)-可測である。
+\end{prop}
+\begin{proof}
+明らか。
+\end{proof}
+
+\(\Gm\)-可測性の定義は少し非直感的かもしれないが、その妥当性については以下の定理が傍証となっている。
+
+\begin{thm}
+「\nameref{finite-additive-outer-measure}」の方法で
+有限加法族 \(\mcl F\) 上の有限加法測度 \(m\) から外測度 \(\Gm\) を作ったとき、
+\(\mcl F\) の元は \(\Gm\)-可測である。
+\end{thm}
+\begin{proof}
+\(E \in \mcl F,\ A \sub X\) とする。
+\(A \sub \Sor_{k = 1}^\ify E_k\)（\(E_k \in \mcl F\)）のとき、
+\(\sum_{k = 1}^\ify m \p{E_k}
+= \sum_{k = 1}^\ify m \p{E_k \sand E} + \sum_{k = 1}^\ify m \p{E_k \sand E\co}
+\ge \Gm \p{A \sand E} + \Gm \p{A \sand E\co}\) である。
+ゆえに左辺の下限を取ると、\(\Gm \p{A} \ge \Gm \p{A \sand E} + \Gm \p{A \sand E\co}\) が成立する。
+\end{proof}
+
+\begin{thm}
+外測度 \(\Gm\) に関して、
+\(E = \sum_{k = 1}^\ify E_k\) で \(E_k\) が\(\Gm\)-可測であるとき、
+\(E\) も \(\Gm\)-可測であり、\(\Gm \p{E} = \sum_{k = 1}^\ify \Gm \p{E_k}\) が成立する。
+\end{thm}
+\begin{proof}
+任意の自然数 \(m\) と \(A \sub X\) について \(\Gm \p{A} \ge \sum_{k = 1}^m \Gm \p{A \sand E_k} + \Gm \p{A \sand E\co}\) が成立することは帰納的に証明できる。
+\(m = 0\) のとき明らかである。
+\(m = m' + 1\) のときは、帰納法の仮定より
+\(\Gm \p{A \sand E_m\co}
+\ge \sum_{k=1}^{m'} \Gm \p{A \sand E_m\co \sand E_k} + \Gm \p{A \sand E_m\co \sand E\co}
+= \sum_{k=1}^{m'} \Gm \p{A \sand E_k} + \Gm \p{A \sand E\co}\)
+であるので、\(E_m\) の \(\Gm\)-可測性より
+\(\Gm \p{A}
+= \Gm \p{A \sand E_m} + \Gm \p{A \sand E_m\co}
+\ge \sum_{k=1}^m \Gm \p{A \sand E_k} + \Gm \p{A \sand E\co}\)
+が成立する。
+
+この不等式について、\(m \to \ify\) の極限を取って、
+\(\Gm \p{A} \ge \sum_{k = 1}^\ify \Gm \p{A \sand E_k} + \Gm \p{A \sand E\co}\) が得られる。
+ゆえに、\(\Gm \p{A} \ge \sum_{k = 1}^\ify \Gm \p{A \sand E_k} + \Gm \p{A \sand E\co}
+\ge \Gm \p[1]{\sum_{k = 1}^\ify \p{A \sand E_k}} + \Gm \p{A \sand E\co}
+= \Gm \p{A \sand E} + \Gm \p{A \sand E\co}\) が成立し、
+\(E\) の \(\Gm\)-可測性がわかる。
+さらに、\(A = E\) とおくと、
+\(\Gm \p{E} \ge \sum_{k = 1}^\ify \Gm \p{E \sand E_k} + \Gm \p{E \sand E\co}
+= \sum_{k = 1}^\ify \Gm \p{E_k}\)
+が得られる。（\(\Gm \p{E} \le \sum_{k = 1}^\ify \Gm \p{E_k}\) は明らか。）
+\end{proof}
+
+\begin{thm}
+外測度 \(\Gm\) に関して、
+\(\Gm\)-可測性は二項合併、二項交叉、差集合について閉じている。
+\end{thm}
+\begin{proof}
+補集合について閉じていることは知られているので、二項交叉のみについて示せばよい。
+\(E, E'\) が \(\Gm\)-可測であり、
+\(A \sub E \sand E',\ B \sub \p{E \sand E'}\co = E\co \sor {E'}\co\) とする。
+\(B_1 \defeq B \sand E',\ B_2 \defeq B \sand {E'}\co\) とすると、
+\(\Gm \p{A} + \Gm \p{B}
+= \Gm \p{A} + \Gm \p{B_1} + \Gm \p{B_2}
+= \Gm \p{A + B_1} + \Gm \p{B_2}
+= \Gm \p{A + B_1 + B_2}
+= \Gm \p{A + B}\)
+が成立する
+（1番目と3番目の等号で \(E'\) の \(\Gm\)-可測性、
+2番目の等号で \(E\) の \(\Gm\)-可測性を用いた）。
+\end{proof}
+
+\begin{cor}
+外測度 \(\Gm\) に関して、
+\(\Gm\)-可測集合全体は可算合併と可算交叉について閉じている。
+\end{cor}
+\begin{proof}
+可算合併は、差集合と可算非交和を使って書ける。
+また、可算交叉は、補集合と可算合併を使って書ける。
+よって以上の議論より明らかである。
+\end{proof}
+
+\section{完全加法族と測度}
+
+\begin{defi}
+\(X\) の部分集合族 \(\mcl B\) は以下の条件を満たすとき
+\m{完全加法族} (completely additive class)、
+\m{可算加法族} (countably additive class)、
+\m{\(\sgm\)-加法族} (\(\sgm\)-additive class)、
+\m{\(\sgm\)-代数} (\(\sgm\)-algebra)、
+\m{\(\sgm\)-体} (\(\sgm\)-field) などという。
+\begin{itemize}
+\item 有限加法族であり、かつ 可算合併 / 可算交叉 について閉じている。\\
+すなわち、補集合について閉じていて、空でなく / \(\emp\) を持ち / \(X\) を持ち、
+かつ 可算合併 / 可算交叉 について閉じている。
+\end{itemize}
+
+また、完全加法族の完全加法測度 \(\mu\) を単に\m{測度} (measure) という。
+また、集合 \(X\) に完全加法族と測度を付与したものを\m{測度空間} (measure space) という。
+
+\(X\) の元についての性質（\(X\) の部分集合）\(P\) について、
+\(X - P \sub E,\ \mu_L \p{E} = 0\) を満たす \(\mu\) が存在するとき、
+言い換えると \(\mu\) の誘導する外測度 \(\Gm\) に関して \(\Gm \p{X - P} = 0\) であるとき、
+性質 \(P\) は\m{ほとんどいたるところで} (almost everywhere)
+（あるいは略して、\m{a.e. で}）
+成立するという。
+\end{defi}
+
+\begin{cor}
+「\nameref{finite-additive-outer-measure}」の方法で
+有限加法族 \(\mcl F\) 上の有限加法測度 \(m\) から外測度 \(\Gm\) を作ったとき、
+\(\Gm\)-可測集合全体は完全加法族をなし、
+\(\Gm\) はその上の測度を与える。
+\end{cor}
+\begin{proof}
+明らか。
+\end{proof}
+
+\begin{defi}
+ルベーグ外測度に関して以上の系を適用することで得られる
+完全加法族の元を\m{ルベーグ可測集合} (Lebesgue measurable set)、
+測度を\m{ルベーグ測度} (Lebesgue measure) という。
+また、ルベーグ測度をここでは \(\mu_L\) と書く。
+\end{defi}
+
+\begin{defi}
+集合に包含関係で半順序を入れることで、
+集合列 \(A_1, A_2, A_3 \dots \sub X\) に対し、
+\m{上極限} \(\limsup_{k \to \ify} A_k\) と\m{下極限} \(\liminf_{k \to \ify} A_k\) を定めることができる。
+（集合列が上に有界であるおかげでどちらの極限も真クラスにならずに済む、ということに注意。）
+両者が一致するとき、それを\m{極限} \(\lim_{k \to \ify} A_k\) とする。
+\end{defi}
+
+\begin{thm}
+完全加法族の元の列 \(E_1, E_2, E_3, \dots\) と測度 \(\mu\) が与えられたとき、以下のことがいえる。
+
+1. \(E_1 \sub E_2 \sub E_3 \sub \cdots\) であれば、
+\(\mu_L \p{\lim_{k \to \ify} E_k} = \lim_{k \to \ify} \mu_L \p{E_k}\) である。
+
+2. \(\mu_L \p{E_1} < \ify\) かつ \(E_1 \spr E_2 \spr E_3 \spr \cdots\) であれば、
+\(\mu_L \p{\lim_{k \to \ify} E_k} = \lim_{k \to \ify} \mu_L \p{E_k}\) である。
+
+3. \(\mu_L \p{\liminf_{k \to \ify} E_k} \le \liminf_{k \to \ify} \mu_L \p{E_k}\) である。
+
+4. \(\mu_L \p{\Sor_{k = 1}^\ify E_k} < \ify\) であれば、
+\(\mu_L \p{\limsup_{k \to \ify} E_k} \ge \limsup_{k \to \ify} \mu_L \p{E_k}\) である。
+
+5. \(\mu_L \p{\Sor_{k = 1}^\ify E_k} < \ify\) であれば、
+\(\mu_L \p{\lim_{k \to \ify} E_k} \ex{=} \lim_{k \to \ify} \mu_L \p{E_k}\) である。
+\end{thm}
+\begin{proof}
+1.
+\(E_0 \defeq \emp\) とすると、
+\(\mu_L \p{\lim_{k \to \ify} E_k}
+= \mu_L \p[1]{\sum_{k = 1}^\ify \p{E_k - E_{k - 1}}}
+= \lim_{l \to \ify} \sum_{k = 1}^l \mu_L \p{E_k - E_{k - 1}}
+= \lim_{l \to \ify} \mu_L \p{E_l}\) を得る。
+
+2.
+1 より
+\(\mu_L \p{E_1} - \mu_L \p{\lim_{k \to \ify} E_k}
+= \mu_L \p{E_1 - \lim_{k \to \ify} E_k}
+= \lim_{k \to \ify} \mu_L \p{E_1 - E_k}
+= \mu_L \p{E_1} - \lim_{k \to \ify} \mu_L \p{E_k}\) を得る。
+ここで \(\mu_L \p{E_1} < \ify\) を利用すると、
+\(\mu_L \p{\lim_{k \to \ify} E_k} = \lim_{k \to \ify} \mu_L \p{E_k}\) を得る。
+
+3.
+1 より
+\(\mu_L \p{\liminf_{k \to \ify} E_k}
+= \mu_L \p{\lim_{m \to \ify} \Sand_{k = m}^\ify E_k}
+= \lim_{m \to \ify} \mu_L \p{\Sand_{k = m}^\ify E_k}
+= \liminf_{m \to \ify} \mu_L \p{\Sand_{k = m}^\ify E_k}
+\le \liminf_{m \to \ify} \mu_L \p{E_m}\)
+が成立する。
+
+4.
+2 より
+\(\mu_L \p{\limsup_{k \to \ify} E_k}
+= \mu_L \p{\lim_{m \to \ify} \Sor_{k = m}^\ify E_k}
+= \lim_{m \to \ify} \mu_L \p{\Sor_{k = m}^\ify E_k}
+= \limsup_{m \to \ify} \mu_L \p{\Sor_{k = m}^\ify E_k}
+\ge \limsup_{m \to \ify} \mu_L \p{E_m}\)
+が成立する。
+
+5.
+3 と 4 より明らか。
+\end{proof}
+
+\begin{cexm}
+\(E_k \defeq \p{k, \ify}\) とすると、
+\(\mu_L \p{\lim_{k \to \ify} E_k} = \mu_L \p{\emp} = 0\) だが、
+\(\lim_{k \to \ify} \mu_L \p{E_k} = \lim_{k \to \ify} \ify = \ify\) であるので、
+\(2, 4, 5\) のような性質は成立していない。
+このように、測度の有限性は実際に必要である。
+\end{cexm}
+
+\section{ルベーグ測度の性質}
+
+\begin{exm}
+1点集合のルベーグ外測度は0なので、これはルベーグ可測である。
+ゆえに、閉区間や開区間もルベーグ可測となる。
+また、ユークリッド空間の可算部分集合は測度 0 のルベーグ可測集合となる。
+\end{exm}
+
+\begin{exm}[測度が 0 だが連続体濃度である集合]
+\(\pb{0, 1}\) から初め、
+\(\pb{0, 1/3} \sor \pb{2/3, 1}\)、
+次は \(\pb{0, 1/9} \sor \pb{2/9, 1/3} \sor \pb{2/3, 7/9}\sor \pb{8/9, 1}\) というように、
+各区間を3つに分けて真ん中を取り除くということを繰り返していった極限の集合 \(E\) を考える。
+\(E\) はルベーグ可測集合の可算交叉なのでルベーグ可測であり、
+その測度は \(\lim_{k \to \ify} \p{2/3}^k = 0\) である。
+一方で、\(E\) は \(\pb{0, 1}\) の元のうち
+末尾に 0 が無限に続かないような 3 進小数表記をしたときに 1 を含まないもの全体の集合であるから、
+連続体濃度である。
+\end{exm}
+
+\begin{prop}
+\(A \sub \RR^n,\ x \in \RR^n,\ a \in \RR\) に対し、
+\(\mu^*_L \p{\b{A} + x} = \mu^*_L \p{A},\ \mu^*_L \p{a \b{A}} = a\mu^*_L \p{A}\) であり、
+\(A\) がルベーグ可測なら \(\b{A} + x, a \b{A}\) もルベーグ可測である。
+\end{prop}
+\begin{proof}
+明らか。
+\end{proof}
+
+\begin{cexm}
+\(\RR\) を \(x \sim y \defiff x - y \in \QQ\) という同値関係で割り、
+各同値類から \(\bp{0, 1}\) に属する代表元を適当にとって集合 \(A\) を作る。これを\emph{ヴィターリ集合}という。
+
+各 \(q \in \QQ \sand \bp{0, 1}\) について、
+\(A_q \defeq \s{\p{a + q}\tx{ の小数部}}{a \in A}\) とすると、
+\(\bp{0, 1} = \sum_{q \in \QQ \sand \bp{0, 1}} A_q\) である。
+もし \(A\) がルベーグ可測なら、
+測度 \(1\) の集合 \(\bp{0, 1}\) が同じ測度の可算無限個の集合に分割されることになり、矛盾する。
+ゆえに、\(A\) はルベーグ可測でない。
+\end{cexm}
+
+\begin{thm}
+ユークリッド空間の開集合および閉集合はルベーグ可測である。
+\end{thm}
+\begin{proof}
+ルベーグ可測性は補集合について閉じているので、開集合のみについて示せばよい。
+任意の開集合 \(U\) に対し、
+\(U = \Sor \s[1]{\prod_i \pb{a_i, b_i} \sub U}{a_i, b_i \in \QQ}\) より、
+\(U\) はルベーグ可測集合の無限可算合併として書けるので、ルベーグ可測である。
+\end{proof}
+
+\begin{thm}
+任意の \(A \sub \RR^n\) に対し、
+\(\mu^*_L \p{A} = \inf \s{\mu_L \p{U}}{U\tx{ は } A \tx{ を含む開集合}}\)
+が成立する。
+\end{thm}
+\begin{proof}
+\(\le\) は明らかなので \(\ge\) を示す。
+
+直方体の有限和で書ける \(E_1, E_2, E_3, \dots\) で、
+\(A \sub \Sor_{k' = 1}^\ify E_{k'}\)
+かつ \(\sum_{k' = 1}^\ify \mu_L \p{E_{k'}} - \mu^*_L \p{A} \le \eps\) となるものが取れる。
+さらに各 \(E_{k'}\) を直方体に分け、
+直方体 \(I_k = \prod_{i = 1}^n \pb{a_{k, i}, b_{k, i}}\ \p{k = 1, 2, 3, \dots}\) で
+\(A \sub \Sor_{k = 1}^\ify I_k\)
+かつ \(\sum_{k = 1}^\ify \mu_L \p{I_k} - \mu^*_L \p{A} \le \eps\) となるものを取れる。
+適当な \(\dlt_k\) を取れば、
+\(J_k \defeq \prod_{i = 1}^n \p{a_{k, i}, b_{k, i} + \dlt_k}\) として
+\(\mu_L \p{J_k} - \mu_L \p{I_k} \le \eps' / 2^k\) となるようにできる。
+このとき、開集合 \(U \defeq \Sor_{k = 1}^\ify J_k\) は
+\(\mu_L \p{U} - \mu^*_L \p{A} \le \eps + \eps'\) を満たす。
+\end{proof}
+
+\begin{defi}
+証明の補助として、\(B_k \defeq \s{x}{\t{x} < k}\) とする。
+\end{defi}
+
+\begin{thm}
+ルベーグ可測集合 \(E\) が与えられたとき、
+\(E\) を含む開集合 \(U\) で \(\mu_L \p{U - E} \le \eps\) を満たすものが取れる。
+\end{thm}
+\begin{proof}
+\(\mu_L \p{E}\) が有限である場合は先ほどの定理より明らか。
+
+一般の場合について考える。
+\(E_k \defeq E \sand B_k\) とし、
+\(E_k\) を含む開集合 \(U_k\) で \(\mu_L \p{U_k - E_k} \le \eps / 2^k\) を満たすものを取る。
+このとき、\(U \defeq \Sor_{k = 1}^\ify U_k\) とすると、
+\(U\) は \(E\) を含む開集合であり、
+\(\mu_L \p{U - E}
+\le \sum_{k = 1}^\ify \mu_L \p{U_k \diff E}
+\le \sum_{k = 1}^\ify \mu_L \p{U_k - E_k}
+\le \eps\) が成立する。
+\end{proof}
+
+\begin{thm}
+ルベーグ可測集合 \(E\) が与えられたとき、
+\(E\) に含まれる閉集合 \(F\) で \(\mu_L \p{E - F} \le \eps\) を満たすものが取れる。
+さらに、\(\mu_L \p{E} < \ify\) であれば \(F\) は有界に取れる。
+\end{thm}
+\begin{proof}
+\(E\) が有界であるとする。
+\(E \sub B_k\) である \(B_k\) を取ると、
+\(B_k - E\) のルベーグ可測性より、
+\(B_k - E\) を含む開集合 \(U'\) で
+\(\mu_L \p[1]{U' - \p{B_k - E}} \le \eps\) を満たすものが取れる。
+さらに、\(U \defeq U' \sand B_k\) とすると、
+これは \(B_k - E\) を含み \(B_k\) に含まれる開集合で、
+\(\mu_L \p[1]{U - \p{B_k - E}} \le \eps\) を満たす。
+更に \(F \defeq B_k - U\) とすると、
+\(\mu_L \p{E - F} = \mu_L \p[1]{U - \p{B_k - E}} \le \eps\) である。
+
+次に一般の場合について考える。
+\(E_k \defeq E \sand \p{B_k - B_{k + 1}}\) とすると、
+\(E_k\) に含まれる閉集合 \(F_k\) で
+\(\mu_L \p{E_k - F_k} < \eps / 2^k\) を満たすものが取れる。
+このとき、\(F \defeq \Sor_{k = 1}^\ify F_k\) は \(E\) に含まれる閉集合であり
+（これはそれほど自明ではないが、
+各 \(F_k\) が \(B_k - B_{k + 1}\) に含まれる閉集合であることをふまえた上で、
+定義に戻れば示せる）、
+\(\mu_L \p{E - F}
+= \sum_{k = 1}^\ify \mu_L \p{E_k \diff F}
+\le \sum_{k = 1}^\ify \mu_L \p{E_k - F_k}
+\le \eps\)
+が成立する。
+
+\(\mu_L \p{E}\) が有限のときは、
+\(\lim_{k \to \ify} \mu_L \p{E \diff B_k}
+= \mu_L \p{\lim_{k \to \ify} E \diff B_k}
+= \mu_L \p{\emp} = 0\) なので、
+\(\mu_L \p{E \diff B_k} \le \eps / 2\) を満たす \(k\) が取れる。
+\(E \sand B_k\) に含まれる閉集合 \(F\) で
+\(\mu_L \p[1]{\p{E \sand B_k} - F} \le \eps / 2\) を満たすものを取れば、
+これは \(E\) に含まれる有界な閉集合であり、
+\(\mu_L \p{E - F} \le \eps\) を満たす。
+\end{proof}
+
+\begin{cor}
+ルベーグ可測集合 \(E\) が与えられたとき、
+狭義単調減少する開集合列 \(\p{U_k}_k\) と
+狭義単調増加する閉集合列 \(\p{F_k}_k\) で
+\(\lim_{k \to \ify} F_k \sub \lim_{k \to \ify} U_k\) かつ
+\(\mu_L \p{\lim_{k \to \ify} U_k - E} = \mu_L \p{E - \lim_{k \to \ify} F_k} = 0\) を満たすものを取れる。
+\end{cor}
+\begin{proof}
+直前の2つの定理より明らかである。
+\end{proof}
+
+\chapter{ルベーグ積分}
+
+リーマン積分が考えられた時代、
+どのような点の集まりが面積をもつか、ということすらわからなかった。
+定積分というのはある種の面積であるが、
+そのままでは面積がわからない。
+しかし長方形の面積ならば知っている。
+そこで、関数をたくさんの小さな長方形で近似しよう、
+というのがリーマン積分の考え方である。
+ここで長方形というのは、ある区間における定数関数であるといえる。
+長方形の面積は、「区間の幅」掛ける「定数関数の取る定数」であるといえる。
+
+今我々は可測集合に対して「大きさ」を得た。
+ゆえに、始域をたくさんの区間にわける、というのではなく、
+始域をたくさんの可測集合にわける、という発想ができる。
+可測集合上での定数関数を「超長方形」と呼ぶならば、
+「超長方形」の「大きさ」は「始域の大きさ」掛ける「定数関数の取る定数」であるといえる。
+関数をたくさんの小さい超長方形で近似しよう、
+というのがルベーグ積分の考え方である。
+超長方形の集まりは、「単関数＝単純な関数 (simple function)」と呼ばれる。
+
+では、単関数で近似できる関数の条件はなんだろう？
+終域側の任意の区間に対して、その逆像が可測集合になっていれば、
+十分に性質が良く、単関数で近似できそうである。
+これは一見強い制約に見えるかもしれないが、
+集合が可測であるという性質は結構弱いので、
+かなり広いクラスの関数が単関数で近似できるとわかる。
+こうしたクラスの関数は、「可測関数 (measurable function)」と呼ばれる。
+さらにもう少しだけ条件を課すと、
+積分がうまく定義される「可積分関数 (integrable function)」が得られる。
+
+こうして得られるルベーグ積分は、
+非常に多くの関数に対して定義されるので、
+とても扱いやすく、良い性質をたくさん持っている。
+ルベーグ積分を導入することによって、
+我々はようやくのびのびと積分について考えられるようになるのである。
+
+\section{可測関数}
+
+\begin{defi}
+完全加法族 \(\mcl B\) の元 \(\RRc\) への関数 \(f\) が与えられたとする。
+\(E \p{a < f \le b}\) で \(\s{x \in E}{a < f \p{x} \le b}\) を表すような記号法を取ることにする。
+\(f\) が \m{\(\mcl B\)-可測} (\(\mcl B\)-measuarable) であるとは、
+任意の実数 \(a\) について \(E \p{f > a} \in \mcl B\) が成立することである。
+
+以下、可測関数の定義域は特に言及がない限り一定の集合 \(E\) とする。
+\end{defi}
+
+\begin{prop}
+\(\RRc\) への関数 \(f\) が可測であるとき、以下の形の集合も \(\mcl B\) の元である
+（ただし、\(a\) は任意の有限実数とする）:
+\(E \p{f \le a},\ E \p{f \ge a},\ E \p{f < a},\ E \p{f = a},\
+E \p{f < \ify},\ E \p{f = \ify},\ E \p{f > -\ify},\ E \p{f = -\ify}\)。
+\end{prop}
+\begin{proof}
+\(\mcl B\) の性質より明らか。
+特に \(E \p{f \ge a} = \Sand_{k = 1}^\ify E\p{f > a - 1/k}\) に注意。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) への \(\mcl B\)-可測関数 \(f, g\) について、
+\(E \p{f > g},\ E \p{f \ge g},\ E\p{f = g}\) は \(\mcl B\) の元である。
+\end{prop}
+\begin{proof}
+有理数の稠密性より、
+\(E \p{f > g} = \Sor_{r \in \QQ} \p[1]{E \p{f > r} \sand E \p{r > g}} \in \mcl B\) が成立する。
+他についてもここから明らかである。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) への可測関数 \(f\) が与えられたとき、
+定数倍 \(\alpha f\ \p{\alpha \in \RR - \c{0}}\)、
+平行移動 \(f + a\ \p{a \in \RR}\) も可測である。
+\end{prop}
+\begin{proof}
+明らか。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) への可測関数 \(f, g\) が、
+\(\c[1]{f \p{x}, g \p{x}} = \c{\pm\ify}\) となるような \(x \in E\) を持たないとき
+（すなわち \(\ify - \ify\) というような状況がないとき）、
+\(f + g\) も可測である。
+\end{prop}
+\begin{proof}
+\(E \p{f + g > a} = E \p{g > a - f}\) より明らか。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) への可測関数 \(f\) と \(\alpha \in \RR\) について、
+\(\t{f}^\alpha = x \mto \t[1]{f \p{x}}^\alpha\) は可測である。
+ただし、\(0^0 = 1\) とし、\(\alpha < 0\) のとき \(0^\alpha = \ify\) とする。
+\end{prop}
+\begin{proof}
+\(\alpha = 0\) のときは明らかなので \(\alpha \ne 0\) のときについて考える。
+\(a < 0\) については \(E \p[1]{\t{f}^\alpha > a} = E \in \mcl B\) である。
+\(a \le 0\) については、
+\(\alpha > 0\) のとき
+\(E \p[1]{\t{f}^\alpha > a}
+= E \p[1]{\t{f} > a^{1/\alpha}}
+= E \p[1]{f < -a^{1/\alpha} \lor a^{1/\alpha} < f} \in \mcl B\)
+が成立し、
+\(\alpha < 0\) のとき
+\(E \p[1]{\t{f}^\alpha > a}
+= E \p[1]{\t{f} < a^{1/\alpha}}
+= E \p[1]{-a^{1/\alpha} < f < a^{1/\alpha}}\in \mcl B\)
+が成立する。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) への可測関数 \(f, g\) について、
+\(\c[1]{\t{f \p{x}}, \t{g \p{x}}} = \c{0, \ify}\)
+となるような \(x\) が存在しないとき
+（すなわち \(0 \cd \ify\) というような状況が起こらないとき）、
+\(fg\) は可測である。
+\end{prop}
+\begin{proof}
+\(f, g\) の値域が \(\RR\) に収まっているときは、
+\(fg = \p[1]{\p{f + g}^2 - \p{f - g}^2} / 4\) より明らか。
+
+一般の場合についても、
+\(E_1 \defeq \s{x \in E}{f \p{x}, g \p{x} \in \RR},\
+E_2 \defeq E - E_1\) とし
+（\(E_1, E_2 \in \mcl B\) に注意）、
+\(f_i \p{x} \defeq f \p{x} \when x \in E_i;\
+0 \when x \in E_j\ \p[1]{\c{i, j} = \c{1, 2}}\) とし、
+同様に \(g_1, g_2\) も定義すれば、
+\(f g = f_1 g_1 + f_2 g_2\) となるので可測性を導ける。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) への可測関数 \(f_1, f_2, f_3, \dots\) が与えられたとき、
+\(\sup_k f_k = x \mto \sup_k f_k \p{x},\ \inf_k f_k,\
+\limsup_{k \to \ify} f_k = x \mto \limsup_{k \to \ify} f_k \p{x},\
+\liminf_{k \to \ify} f_k\) は可測である。
+（ゆえに \(\lim_{k \to \ify} f_k\) はもし存在すれば可測である。）
+\end{prop}
+\begin{proof}
+\(E \p{\sup_k f_k > a} = \Sor_{k = 1}^\ify E\p{f_k > a} \in \mcl B\) より \(\sup_k f_k\) は可測。
+\(\inf_k f_k\) についても同様。
+\(\limsup_{k \to \ify} f_k,\ \liminf_{k \to \ify} f_k\) については
+\(\sup, \inf\) の組み合わせで書けるので明らか。
+\end{proof}
+
+\begin{rem}
+以上をまとめると、\(\RRc\) への関数の可測性は、
+有限和、有限積、絶対値の実数乗、
+関数列の \(\sup, \inf, \limsup, \liminf, \lim\) について
+（演算が適切に定義できる状況下で）閉じている。
+また、\(\RRc\) への定数関数は可測である。
+\end{rem}
+
+\begin{defi}
+\(\CC\) への関数が可測であるとは、実部、虚部がともに可測であることである。
+（複素数において、\(\ify\) の実部、虚部はうまく定義できないということに注意。）
+\end{defi}
+
+\begin{prop}
+\(\CC\) への関数の可測性は、
+有限和、有限積、絶対値の実数乗、
+関数列の \(\sup, \inf, \limsup, \liminf, \lim\) について
+（演算が適切に定義できる状況下で）閉じている。
+また、\(\CC\) への定数関数は可測である。
+\end{prop}
+\begin{proof}
+実部と虚部に分けて考えれば明らか。
+\end{proof}
+
+\begin{thm}[可測関数の無限線形和を収束させる]\label{measurable-function-infinite-linear-sum-converge}
+\(\mu \p{E} < \ify\) を満たす \(E\) から \(\RR\gez\) への可測関数 \(f_1, f_2, f_3, \dots\) が与えられたとき、
+適切な \(c_1, c_2, c_3, \dots > 0\) を取れば、
+\(\sum_{k = 1}^\ify c_k f_k \p{x}\) がほとんどいたるところ収束する。
+\end{thm}
+\begin{proof}
+\(\mu \p{E} < \ify\) より
+\(\lim_{M \to \ify} \mu \p[1]{E \p{f_k > M}}
+= \mu \p[1]{\lim_{M \to \ify} E \p{f_k > M}}
+= \mu \p[1]{E \p{f_k = \ify}} = 0\) であるので、
+適切な \(M_k > 0\) を取れば、
+\(E_k \defeq E \p{f_k > M_k}\) として
+\(\mu \p{E_k} \le 1/2^k\) となるようにできる。
+\(c_k \defeq 1 / \p{2^k M_k}\) とすれば、任意の \(m\) について、
+\(X - \Sor_{k = m}^\ify E_k\) 上 \(\sum_{k = 1}^\ify c_k f_k \p{x}\) は収束する。
+ゆえに、\(X - \Sand_{m = 1}^\ify \Sor_{k = m}^\ify E_k\) 上 \(\sum_{k = 1}^\ify c_k f_k \p{x}\) は収束し、なおかつ
+\(\mu \p{\Sand_{m = 1}^\ify \Sor_{k = m}^\ify E_k}
+= \lim_{m \to \ify} \sum_{k = m}^\ify \mu \p{E_k}
+\le \lim_{m \to \ify} 1/2^{m-1}
+= 0\)
+が成立している。
+\end{proof}
+
+\section{単関数}
+
+\begin{defi}
+可測集合 \(E\) について、
+\(\sum_{k = 1}^m \alpha_k \chi_{E_k}\
+\p{E_1, \dots, E_m \in \mcl B,\ E = \sum_{k = 1}^m E_m,\
+\alpha_1, \dots, \alpha_m \in \RR\gez}\) という形の
+\(E\) から \(\RR\gez\) への（可測な）関数を
+\m{単関数} (simple function) という。
+
+以下、特に言及がない限り単関数の定義域は一定の集合 \(E\) とする。
+\end{defi}
+
+\begin{thm}
+\(\RR\gez\) への可測関数 \(f\) は
+広義単調増加する単関数列 \(f_1, f_2, f_3, \dots\)
+の極限として表せる。
+\end{thm}
+\begin{proof}
+\(f_k \p{x} \defeq
+\p{m - 1} / 2^k \when x \in E \p[1]{\p{m - 1} / 2^k \le f < m / 2^k},\ m = 1, \dots, 2^k k;\
+k \when x \in E \p{f \ge k}\) とすればよい。
+（終域側について、「区切り」の細かさが徐々に細かくなり、同時に「区切り」の上界が徐々に大きくなっている、ということが重要。）
+\end{proof}
+
+\begin{cor}
+\(\RR\gez\) への可測関数 \(f\) は
+適当な単関数 \(g_1, g_2, g_3, \dots\) により
+\(f = \sum_{k = 1}^\ify g_k\) と表せる。
+\end{cor}
+\begin{proof}
+先ほどの定理を利用した後、\(f_0 \defeq 0,\ g_k \defeq f_k - f_{k - 1}\) とすれば良い。
+\end{proof}
+
+\section{単関数の積分}
+
+\begin{defi}
+単関数 \(f = \sum_{k = 1}^m \alpha_k \chi_{E_k}\) について、
+その\m{積分} (integral) を
+\(\int_E f \d \mu \defeq \sum_{k = 1}^m \alpha_k \mu \p{E_k}\) により定める。
+（これが単関数の書き方によらないことは明らか。
+一般に、複数の \(E\) の分割方法が与えられたとき、
+いずれよりも細かい分割を考えればよい。）
+\end{defi}
+
+\begin{prop}
+1. 単関数 \(f, g\) について、
+\(\int_E \p{f + g} \d \mu = \int_E f \d \mu + \int_E g \d \mu\) である。
+
+2. 単関数 \(f\) について、
+\(A, B\) が互いに交わらない \(E\) の可測部分集合であるとき、
+\(\int_{A + B} f \d \mu = \int_A f \d \mu + \int_B f \d \mu\) である。
+
+3. 単関数 \(f, g\) が \(f \ge g\) を満たすとき、
+\(\int_E f \d \mu \ge \int_E g \d \mu\) である。
+\end{prop}
+\begin{proof}
+明らか。
+\end{proof}
+
+\begin{lem}
+単調増加な単関数列 \(f_1, f_2, f_3, \dots\) と単関数 \(g\) が
+\(\lim_{k \to \ify} f_k \ge g\) を満たしているとき、
+\(\lim_{k \to \ify} \int_E f_k \d \mu \ge \int_E g \d \mu\) が成立する。
+\end{lem}
+\begin{proof}
+\(E\) を \(E - E\p{g = 0}\) に取り替えることで、
+\(E\) 上で \(g > 0\) と仮定してよい。
+
+\(g\) の最小値、最大値をそれぞれ \(\alpha, \beta > 0\) とする。
+任意の \(\eps_1 \in \p{0, \alpha}\) を取る。
+\(F_k \defeq E \p{f_k > g - \eps}\) とすると、
+\(\p{F_k}_k\) は \(E\) に収束する広義単調増加列であるので、
+\(\lim_{k \to \ify} \mu \p{F_k} = \mu \p{\lim_{k \to \ify} F_k} = \mu \p{E}\) である。
+
+\(\mu \p{E} < \ify\) のとき、
+\(\lim_{k \to \ify} \mu \p{E - F_k} = \mu \p{E - \lim_{k \to \ify} F_k} = 0\) より、
+\(k \ge N\) で \(\mu \p{E - F_k} \le \eps'\) となるような \(N\) が存在する。
+ゆえに、
+\(\int_E f_k \d \mu - \int_E g \d \mu
+\ge \int_{F_k} \p{f_k - g} \d \mu - \int_{E - F_k} g \d \mu
+\ge \mu{F_k} \cd \p{- \eps} - \eps' \cd \bt\)
+であるので、\(k \to \ify,\ \eps \to 0,\ \eps' \to 0\) として
+\(\lim_{k \to \ify} \int_E f_k \d \mu - \int_E g \d \mu \ge 0\) を得る。
+ゆえに、\(\lim_{k \to \ify} \int_E f_k \d \mu \ge \int_E g \d \mu\) が成立する。
+
+\(\mu \p{E} = \ify\) の場合は、
+\(\int_E f_k \d \mu
+\ge \int_{F_k} f_k \d \mu
+\ge \int_{F_k} \p{g - \eps} \d \mu
+\ge \mu \p{F_k} \cd \p{\alpha - \eps}\)
+より、\(k \to \ify\) として
+\(\lim_{k \to \ify} \int_E f_k \ge \ify \ge \int_E g \d \mu\) となる。
+\end{proof}
+
+\begin{lem}
+単調増加な単関数列 \(f_1, f_2, f_3, \dots\) と \(g_1, g_2, g_3, \dots\) が
+\(\lim_{k \to \ify} f_k \ge \lim_{k \to \ify} g_k\) を満たすとき、
+\(\lim_{k \to \ify} \int_E f_k \d \mu \ge \lim_{k \to \ify} \int_E g_k \d \mu\) が成立する。
+（ゆえに、\(\lim_{k \to \ify} f_k = \lim_{k \to \ify} g_k\) を満たすとき、
+\(\lim_{k \to \ify} \int_E f_k \d \mu = \lim_{k \to \ify} \int_E g_k \d \mu\) が成立する。）
+\end{lem}
+\begin{proof}
+任意の \(m\) について先ほどの補題より
+\(\lim_{k \to \ify} \int_E f_k \d \mu \ge \int_E g_m \d \mu\) であるので、
+\(m \to \ify\) を取って
+\(\lim_{k \to \ify} \int_E f_k \d \mu \ge \lim_{m \to \ify} \int_E g_m \d \mu\) となる。
+\end{proof}
+
+\section{可測関数の積分}
+
+先ほどの補題により、次の定義が矛盾しないことがわかる。
+
+\begin{defi}
+\(\RR\gez\) への可測関数 \(f\) について、
+その\m{積分} (integral) を
+\(f\) に収束する適当な広義単調増加な単関数列 \(f_1, f_2, f_3, \dots\) により
+\(\int_E f \d \mu \defeq \lim_{k \to \ify} \int_E f_k \d \mu\) と定める。
+\end{defi}
+
+\begin{prop}
+1. \(\RR\gez\) への可測関数 \(f, g\) について、
+\(\int_E \p{f + g} \d \mu = \int_E f \d \mu + \int_E g \d \mu\) である。
+
+2. \(\RR\gez\) への可測関数 \(f\) について、
+\(A, B\) が互いに交わらない \(E\) の可測部分集合であるとき、
+\(\int_{A + B} f \d \mu = \int_A f \d \mu + \int_B f \d \mu\) である。
+
+3. \(\RR\gez\) への可測関数 \(f, g\) が \(f \ge g\) を満たすとき、
+\(\int_E f \d \mu \ge \int_E g \d \mu\) である。
+\end{prop}
+\begin{proof}
+単関数の場合に帰着させれば明らか。
+\end{proof}
+
+\begin{defi}
+\(\RRc\) への可測関数 \(f\) について、
+\(f_+ \p{x} \defeq \max \c{f \p{x}, 0},\
+f_- \p{x} \defeq - \min \c{f \p{x}, 0} \) とする
+（それぞれを\m{正部} (positive part)、\m{負部} (negative part) と呼ぶことにする）と、
+これらはともに \(\RRc\gez\) への可測関数であり、\(f = f_+ - f_-\) である。
+\(\int_E f_+ \d \mu, \int_E f_- \d \mu\) の少なくとも一方が有限であるとき
+\(f\) は \(E\) 上\m{定積分} (definite integral) を持つといい、
+\(\int_E f \d \mu \defeq \int_E f_+ \d \mu - \int_E f_- \d \mu\) とする。
+さらにこの値が有限であるとき、
+すなわち \(\int_E f_+ \d \mu, \int_E f_- \d \mu\) の両方が有限であるとき、
+\(f\) は \(E\) 上\m{可積分} (integrable) であるという。
+
+\(\CC\) への可測関数 \(f\) については、
+実部・虚部の両方が \(E\) 上定積分を持つときに
+\(E\) 上{定積分} (definite integral) を持つといい、
+実部・虚部の両方が可積分であるときに \(E\) 上\m{可積分} (integrable) であるといい、
+\(\int_E f \d \mu \defeq \int_E \Re f \d \mu + \i \int_E \Im f \d \mu\)
+（ただし、実部・虚部のいずれかの積分が有限でなければ \(\int_E f \d \mu = \ify\)）とする。
+
+以下、「定積分を持つ」「可積分である」と単に書いた場合は一定の集合 \(E\) 上の話であるとする。
+\end{defi}
+
+\begin{prop}
+\(\RRc\) または \(\CC\) への可測関数 \(f\) が可積分であるための必要十分条件は、
+\(\t{f}\) が可積分であることである。
+\end{prop}
+\begin{proof}
+\(\RRc\) への関数であるときは明らか。
+
+\(\CC\) への関数については、\(g \defeq \Re f,\ h \defeq \Im f\) として
+\(\t{f} \le g_+ + g_- + h_+ + h_- \le \rt{2} \t{f}\) より
+明らか。
+\end{proof}
+
+\begin{prop}
+定積分を持つ \(\RRc\) または \(\CC\) への可測関数 \(f\) について、
+\(A, B\) が \(A + B = E\) を満たす可測集合であるとき、
+\(f\) は \(A, B\) 上も定積分を持ち、
+\(\int_{A + B} f \d \mu = \int_A f \d \mu + \int_B f \d \mu\) を満たす
+（ただし、複素数の場合でも \(\ify = \ify + \ify\) とする）。
+（ゆえに、\(f\) は \(E\) 上可積分ならば \(A, B\) 上も可積分である。）
+\end{prop}
+\begin{proof}
+実部・虚部、正部・負部に分割すれば明らか。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) または \(\CC\) への可測関数 \(f\) について、
+\(\mu \p{E} = 0\) なら \(f\) は可積分であり \(\int_E f \d \mu = 0\)。
+\end{prop}
+\begin{proof}
+単関数で近似した段階で積分が 0 であるので明らか。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) または \(\CC\) への可測関数 \(f, g\) について、
+\(E\) 上ほとんどいたるところ \(f = g\) であるとき、
+\(\int_E f \d \mu \xx{=} \int_E g \d \mu\) である。
+\end{prop}
+\begin{proof}
+\(F \defeq E\p{f \ne g}\) とすると、
+\(\int_E f \d \mu
+\xx{=} \int_{E - F} f \d \mu
+\xx{=} \int_{E - F} g \d \mu
+\xx{=} \int_E g \d \mu\)
+が成立する。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) への可積分関数 \(f\) について、
+\(\mu \p[1]{E \p{f = \pm \ify}} = 0\) である。
+\end{prop}
+\begin{proof}
+\(F \defeq E\p{f_+ = \ify}\) として、
+\(\mu \p{F} > 0\) とすると、
+\(f_+\) は先ほどの性質より \(F\) 上可積分であるが、
+\(f_+\) を \(F\) 上広義単調増加する単関数列 \(f_k \p{x} = k\) で近似でき、
+\(\int_F f_k \d \mu = k \mu \p{F} \to \ify\) であるので矛盾。
+同様に、\(E\p{f_- = -\ify} = 0\) である。
+\end{proof}
+
+\begin{prop}
+\(\RRc\) または \(\CC\) への可積分関数 \(f, g\) について、
+\(f + g\) も可積分であり、
+\(\int_E \p{f + g} \d \mu = \int_E f \d \mu + \int_E g \d \mu\) である。
+（\(\c{f \p{x}, g \p{x}} = \c{\ify, -\ify}\) となる \(x\) 全体の測度が \(0\) になるので、
+そこでの \(f \p{x} + g \p{x}\) の値は適当に決めて構わない、ということに注意。）
+\end{prop}
+\begin{proof}
+実部・虚部、正部・負部に分割すれば明らか。
+\end{proof}
+
+\begin{prop}
+定積分を持つ \(\RRc\)（または \(\CC\)）への可測関数と
+\(\alpha \in \RR\)（または \(\alpha \in \CC\)）について、
+\(\alpha f\) も定積分を持ち、
+\(\int_E \alpha f \d \mu = \alpha \int_E f \d \mu\) である。
+\end{prop}
+\begin{proof}
+実部・虚部、正部・負部に分割すれば明らか。
+\end{proof}
+
+\begin{prop}
+\(\RR\gez\) への可積分関数 \(f, g\) が \(f \ge g\) を満たすとき、
+\(\int_E f \d \mu \ge \int_E g \d \mu\) である。
+\end{prop}
+\begin{proof}
+\(\int_E f \d \mu - \int_E g \d \mu
+= \int_E \p{f - g} \d \mu
+\ge 0\) が成立する。
+\end{proof}
+
+\begin{thm}
+定積分を持つ \(\RRc\) または \(\CC\) への可積分関数 \(f\) について、
+\(\t[1]{\int_E f \d \mu} \le \int_E \t{f} \d \mu\) である。
+\end{thm}
+\begin{proof}
+\(f\) が \(\RRc\) への関数であるときは明らか。
+\(\CC\) への関数であるときは、\(\alpha \defeq \int_E f \d \mu\) とする。
+\(\alpha = 0,\ \ify\) のときは明らかである。
+そうでないとき、\(\bt = \alpha / \t{\alpha}\) とおく。
+\(g \defeq f / \t{f}\) とすると、
+\(\t[1]{\int_E f \d \mu} = \cjgt\bt \int_E f \d \mu = \int_E \cjgt\bt g \t{f} \d \mu\) であるので、
+両辺の実部を取って、
+\(\t[1]{\int_E f \d \mu} = \int_E \p[1]{\Re \cjgt\bt g} \t{f} \d \mu \le \int_E \t{f} \d \mu\)。
+\end{proof}
+
+\begin{prop}
+\(\RRc\gez\) への可積分関数 \(f\) が
+\(\int_E f \d \mu = 0\) を満たすとき、
+ほとんどいたるところ \(f \p{x} = 0\) である。
+\end{prop}
+\begin{proof}
+\(E_k \defeq E \p{f > 1/k}\) とすると、
+\(\mu \p{E_k} \cd \p{1 / k} \le \int_F f \d \mu = 0\) より \(\mu \p{E_k} = 0\) である。
+ゆえに、\(\mu \p[1]{E \p{f \ne 0}}
+= \mu \p{\lim_{k \to \ify} E_k}
+= \lim_{k \to \ify} \mu \p{E_k} = 0\) である。
+\end{proof}
+
+\section{ルベーグ可積分関数の性質}
+
+\begin{rem}
+ルベーグ測度による積分を特に\m{ルベーグ積分} (Lebesgue integral) と呼ぶことにする。
+（これを測度空間における一般の積分をルベーグ積分と呼ぶ場合もあるので注意。）
+
+以下の定理より、ルベーグ積分は普通はリーマン積分に取って代わることができるので、
+単に \(\RR^n\) からの関数について積分と書いた場合はルベーグ積分のことを指すとし、
+さらに \(\int_E f \d \mu_L\) を \(\int_E f \p{x} \d x\) のようにも書くことにする。
+\end{rem}
+
+\begin{thm}
+有界閉区間 \(I = \b{a, b}\) から \(\CC\) への連続関数 \(f\) は \(I\) 上ルベーグ可積分であり、
+そのルベーグ積分はリーマン積分と一致する。
+\end{thm}
+\begin{proof}
+
+\(I\) を \(k\) 等分して各小区間で \(f\) を \(f\) の下限で近似して単関数 \(f_k\) を得る。
+このとき、\(f_1, f_2, f_3, \dots\) は \(f\) に収束する広義単調増加な単関数列であり、
+\(\int_I f_k \d \mu_L\) は \(f\) の \(I\) 上のリーマン積分に収束する。
+\end{proof}
+
+\begin{thm}
+\(\RR^n\) から \(\RRc\) または \(\CC\) への可積分関数 \(f\) が与えられたとき、
+任意の \(\eps > 0\) に対し、
+\(\RR^n\) から \(\CC\) への\m{コンパクト台} (compact support) の
+（\(0\) の補集合の逆像の閉包がコンパクトである、
+すなわちある有界な範囲でしか非 \(0\) の値を取らない、という意味）
+連続関数 \(g\) で
+\(\int_{\RR^n} \t{f - g} \d \mu \le \eps\) を満たすものを取れる。
+\end{thm}
+\begin{proof}
+実部・虚部、正部・負部に分けることで \(f \ge 0\) の場合に帰着させられる。
+以下、\(f \ge 0\) とする。
+
+\(f_k \defeq \p{m - 1} / 2^k \when \p{m - 1} / 2-k \le f \p{x} < m / 2^k \land \t{x} < k,\ m = 1, \dots, 2^k k;\
+0 \othws\) とすると、
+これは \(f\) に収束する広義単調増加する単関数列なので、
+\(\lim_{k \to \ify} \int_{\RR^n} \t{f - f_k} \d \mu_L
+= \int_{\RR^n} f \d \mu_L - \lim_{k \to \ify} \p[1]{\int_{\RR^n} f_k \d \mu_L}
+= 0\)
+である。
+（ここで \(\int_{\RR^n} f \d \mu_L\) の有限性が必要になっていることに注意。）
+ゆえにある \(N\) について \(\int_{\RR^N} \t{f - f_k} \d \mu_L \le \eps / 2\) となる。
+
+\(f_N = \sum_{i = 1}^m \alpha_i \chi_{E_i}\ \p{\alpha > 0}\) と書けば、
+\(F_i \sub E_i \sub U_i \sub B_N,\ \mu \p{U_j - F_j} < \eps / 2 m \alpha_i\) を満たす
+閉集合 \(F_i\) と開集合 \(U_i\) を取れるので、
+\(g_i \p{x} \defeq \d \p{x, U_i\co} / \p{\d \p{x, F_i} + \d \p{x, U_i\co}}\) とすると、
+これは \(\RR^n\) から \(\b{0, 1}\) への連続関数で、
+\(F_i\) で \(1\)、\(U_i\co\) で \(0\) となる。ゆえに、
+\(\int_{\RR^n} \t{\chi_{E_i} - g_i} \d x \le \mu \p{U_i - F_i} \le \eps / 2 m \alpha_i\) である。
+したがって、連続関数 \(g \defeq \sum_{i = 1}^m \alpha_i g_i\) は
+\(\int_{\RR^n} \t{f_N - g} \d \mu \le \eps / 2\) を満たすので、
+\(\int_{\RR^n} \t{f - f_k} \d \mu_L \le \eps / 2\) と合わせれば
+\(\int_{\RR^n} \t{f - g} \d \mu_L \le \eps\) を得る。
+（\(U_i \sub B_N\) が \(g\) の台の閉包のコンパクト性を生み出していることに注意。）
+\end{proof}
+
+\begin{thm}
+\(\RR^n\) から \(\RRc\) または \(\CC\) への可積分関数 \(f\) について、
+\(\lim_{\t{v} \to 0} \int_{\RR^n} \t[1]{f \p{x + v} - f \p{x}} \d x = 0\) である。
+\end{thm}
+\begin{proof}
+任意の \(\eps > 0\) に対し、先ほどの定理により \(g\) を得る。
+\(\A{x \in B,\ v \w \t{v} < 1} g \p{x + v} \ne 0\) となるようなコンパクトな \(B\) を取れる。
+\(g\) は \(B\) 上一様連続なので、\(\t{v}\) を十分小さく（少なくとも \(1\) より小さく）すると \(\int_B \t[1]{g \p{x + v} - g\p{x}} \d x < \eps\) とできる。
+そのようなとき、
+\(\int_{\RR^n} \t[1]{f \p{x + v} - f \p{x}} \d x
+\le \int_{\RR^n} \t[1]{f \p{x + v} - g \p{x + v}} \d x + \int_B \t[1]{g \p{x + v} - g\p{x}} \d x + \int_{\RR^n} \t[1]{g \p{x} - f \p{x}} \d x \le 3 \eps\) が成立する。
+ゆえに、\(\eps \to 0,\ \t{v} \to 0\) として結論を得る。
+\end{proof}
+
+\begin{prop}
+定積分を持つ \(\RR^n\) から \(\RRc\) または \(\CC\) への関数 \(f\) について、以下が成立する。
+
+1. 任意の正則な \(n\) 次元実行列 \(A\) について、\(x \mto f \p{A x}\) も定積分を持ち、
+\(\int_{\RR^n} f \p{A x} \d x = \int_{\RR^n} f \p{x} \d x / \det A\) である。
+
+2. 任意の \(v \in \RR^n\) について、\(x \mto f \p{x + v}\) も定積分を持ち、
+\(\int_{\RR^n} f \p{x + v} \d x = \int_{\RR^n} f \p{x} \d x\) である。
+\end{prop}
+\begin{proof}
+実部・虚部、正部・負部に分割して \(f \ge 0\) の場合に帰着させて考えれば明らか。
+\end{proof}
+
+\begin{cexm}
+\(\RR\) から \(\RR\gez\) へのルベーグ可測関数 \(f\) で、
+空でないどの開集合 \(U \sub \RR\) 上でもルベーグ可積分にならないものを構成する。
+
+\(g \p{x} \defeq 1 / \t{x}\) とする。
+（ただし、\(x = 0\) では適当な有限値にしておく。）
+\(q \in \bp{0, 1} \sand \QQ\) に対し、\(g_q \p{x} \defeq g \p{x - q}\) とし、
+「\nameref{measurable-function-infinite-linear-sum-converge}」の方法で、
+\(\sum_{q \in \bp{0, 1} \sand \QQ} c_q g_q\) が
+\(\bp{0, 1}\) 上ほとんどいたるところ収束するように
+\(c_q > 0\) を取る。
+\(\sum_{q \in \bp{0, 1} \sand \QQ} c_q g_q\) を元にして、
+\(\bp{0, 1}\) 上収束しない部分で適当な有限値を与え、
+かつ \(\bp{0, 1}\) での値を周期的に繰り返し \(\RR\) 全体に値を与えることで、
+ルベーグ可測関数 \(f\) を得る。
+
+任意の空でない開集合 \(U\) について、\(q + n \in U,\ n \in \ZZ\) を満たす
+\(q \in \bp{0, 1} \sand \QQ\) が取れる。
+ゆえに、\(U' \defeq \s[1]{x \in \bp{0, 1}}{x + n \in U}\) とすると、
+\(\int_U f \p{x} \d x \ge \int_{U'} c_q g_q \p{x} \d x = \ify\)
+である。
+\end{cexm}
+
+\end{document}
